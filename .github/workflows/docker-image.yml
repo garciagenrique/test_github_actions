@@ -14,8 +14,9 @@ env:
   IMAGE_NAME: test_actions_registry
 
 jobs:
-  if_merged:
-    if: github.event.pull_request.merged == true
+  #  if_merged:
+    #    if: github.event.pull_request.merged == true
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3

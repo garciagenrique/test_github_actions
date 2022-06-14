@@ -4,6 +4,7 @@ on:
   pull_request:
     types:
       - closed
+
 env:
   IMAGE_NAME: test_actions_registry
 
@@ -32,5 +33,5 @@ jobs:
 
         docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
         docker push $IMAGE_ID:$VERSION
-        docker tag $IMAGE $IMAGE:latest
-        docker push $IMAGE:latest
+        docker tag $IMAGE_ID:$VERSION $IMAGE_ID:latest
+        docker push $IMAGE_ID:latest

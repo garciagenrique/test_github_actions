@@ -1,13 +1,15 @@
 name: Docker Image CI
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
+    types:
+      - closed
+env:
+  IMAGE_NAME: test_actions_registry
 
 jobs:
-  build:
+  if_merged:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -16,7 +18,7 @@ jobs:
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
     
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file Dockerfile --tag $IMAGE_NAME
       
     - name: Push image to the GitHub registry
       run: |
@@ -26,6 +28,9 @@ jobs:
         
         echo IMAGE_ID=$IMAGE_ID
         echo VERSION=$VERSION
+        echo IMAGE_NAME=$IMAGE_NAME
+
         docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
         docker push $IMAGE_ID:$VERSION
-      
+        docker tag $IMAGE:$VERSION $IMAGE:latest
+        docker push $IMAGE:latest
